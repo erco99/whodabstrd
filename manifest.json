@@ -6,13 +6,22 @@
   "background": {
     "service_worker": "/src/background/background.js"
   },
-  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": [
+    "*://*.instagram.com/"
+  ],
+  "permissions": ["storage", "activeTab", "scripting", "cookies"],
   "action": {
     "default_popup": "/src/popup/popup.html" ,
     "default_icon": {
       "48": "/assets/images/get_started48.png"
     }
   },
+  "content_scripts": [
+    {
+      "matches": ["https://www.instagram.com/*"],
+      "js": ["/src/content/content.js"]
+    }
+  ],
   "icons": {
     "48": "/assets/images/get_started48.png"
   },
