@@ -25,5 +25,11 @@
   "icons": {
     "48": "/assets/images/get_started48.png"
   },
-  "options_page": "/src/options/options.html"
+  "options_page": "/src/options/options.html",
+    "web_accessible_resources": [
+    {
+      "resources": ["/src/content/content.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

@@ -7,20 +7,28 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 function insertElementInPage(users) {
   if (!users || users.length === 0) return;
 
+  // Inietta il CSS se non già presente
+  if (!document.getElementById("contentCss")) {
+    const link = document.createElement("link");
+    link.id = "contentCss";
+    link.rel = "stylesheet";
+    link.href = chrome.runtime.getURL("src/content/content.css");
+    document.head.appendChild(link);
+  }
+
   const existing = document.getElementById("usersContainer");
   if (existing) existing.remove();
 
   const container = document.createElement("div");
   container.id = "usersContainer";
-  container.style.backgroundColor = "#945c5cff";
-  container.style.padding = "8px";
-  container.style.margin = "0";
-  container.style.borderBottom = "1px solid #ccc";
+
+  const title = document.createElement("h1");
+  title.textContent = "List of BASTARDS:";
+  container.appendChild(title);
 
   users.forEach(user => {
     const p = document.createElement("p");
     p.textContent = `ID: ${user.id}, Username: ${user.username}`;
-    p.style.margin = "0";
     container.appendChild(p);
   });
 
