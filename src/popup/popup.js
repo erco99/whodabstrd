@@ -1,16 +1,88 @@
-const button = document.getElementById("colorBtn");
+const button = document.getElementById("scanBtn")
+const maxCount = 25
 
-// Carica il colore dalle opzioni
+const headers = {
+  'accept': '*/*',
+  'accept-encoding': 'gzip, deflate, br, zstd',
+  'accept-language': 'it-IT,it;q=0.9,en-US;q=0.8,en;q=0.7,es;q=0.6,fr;q=0.5,pt;q=0.4',
+  'dpr': '1',
+  'priority': 'u=1, i',
+  'sec-ch-prefers-color-scheme': 'dark',
+  'sec-ch-ua': '"Not A(Brand";v="8", "Chromium";v="132", "Google Chrome";v="132"',
+  'sec-ch-ua-full-version-list': '"Not A(Brand";v="8.0.0.0", "Chromium";v="132.0.6834.159", "Google Chrome";v="132.0.6834.159"',
+  'sec-ch-ua-mobile': '?0',
+  'sec-ch-ua-model': '""',
+  'sec-ch-ua-platform': '"Linux"',
+  'sec-ch-ua-platform-version': '"6.8.0"',
+  'sec-fetch-dest': 'empty',
+  'sec-fetch-mode': 'cors',
+  'sec-fetch-site': 'same-origin',
+  'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36',
+  'viewport-width': '1920',
+  'x-ig-app-id': '936619743392459',
+}
+
 chrome.storage.sync.get("buttonColor", ({ buttonColor }) => {
   if (buttonColor) {
     button.style.backgroundColor = buttonColor;
   }
 });
 
-// Cambia colore quando cliccato
-button.addEventListener("click", () => {
-  chrome.storage.sync.get("buttonColor", ({ buttonColor }) => {
-    const currentColor = button.style.backgroundColor || "steelblue";
-    button.style.backgroundColor = currentColor === buttonColor ? "steelblue" : buttonColor;
-  });
+
+button.addEventListener("click", async () => {
+  try {
+    const userId = await getUserId();
+    if (!userId) throw new Error("ds_user_id non trovato");
+
+    const [allFollowers, allFollowing] = await Promise.all([
+      fetchAllUsers("followers", maxCount, userId),
+      fetchAllUsers("following", maxCount, userId)
+    ]);
+
+    console.log("Tutti i followers:", allFollowers);
+    console.log("Tutti i following:", allFollowing);
+
+    const idsFollowers = new Set(allFollowers.map(u => u.id));
+    const notFollowingBack = allFollowing.filter(u => !idsFollowers.has(u.id));
+
+    console.log("Non ti seguono:", notFollowingBack);
+
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.tabs.sendMessage(tabs[0].id, { action: "insertUsers", users: notFollowingBack });
+    });
+
+  } catch (err) {
+    console.error(err);
+  }
 });
+
+async function fetchAllUsers(type, count, userId) {
+  let allUsers = [];
+  let next_max_id = null;
+
+  const urlBase = `https://www.instagram.com/api/v1/friendships/${userId}/${type}/?count=${count}`;
+
+  do {
+    const url = next_max_id ? `${urlBase}&max_id=${next_max_id}` : urlBase;
+
+    const res = await fetch(url, { method: "GET", headers: headers });
+    if (!res.ok) throw new Error(`Error fetch ${type}`);
+
+    const data = await res.json();
+
+    allUsers = allUsers.concat(data.users);
+
+    next_max_id = data.next_max_id || null;
+
+  } while (next_max_id);
+
+  return allUsers;
+}
+
+async function getUserId() {
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage({ action: "get_ds_user_id" }, (response) => {
+      resolve(response.ds_user_id);
+    });
+  });
+}
