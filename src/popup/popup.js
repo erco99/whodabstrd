@@ -1,4 +1,6 @@
 const button = document.getElementById("scanBtn")
+const loader = document.getElementById("loader");
+
 const maxCount = 25
 
 const headers = {
@@ -31,6 +33,11 @@ chrome.storage.sync.get("buttonColor", ({ buttonColor }) => {
 
 button.addEventListener("click", async () => {
   try {
+    button.disabled = true;
+    loader.style.display = "block";
+
+    console.log("click")
+
     const userId = await getUserId();
     if (!userId) throw new Error("ds_user_id non trovato");
 
@@ -53,6 +60,9 @@ button.addEventListener("click", async () => {
 
   } catch (err) {
     console.error(err);
+  } finally {
+    loader.style.display = "none";
+    button.disabled = false;
   }
 });
 
