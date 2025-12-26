@@ -13,4 +13,12 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     });
     return true;
   }
+
+  if (msg.action === "get_csrftoken") {
+      chrome.cookies.getAll({ domain: ".instagram.com" }, (cookies) => {
+      const csrfToken = cookies.find(c => c.name === "csrftoken");
+      sendResponse({ csrftoken: csrfToken ? csrfToken.value : null });
+    });
+    return true;
+  }
 });
