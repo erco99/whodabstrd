@@ -51,11 +51,8 @@ function insertElementInPage(users) {
     const row = document.createElement("div");
     row.className = "userRow";
 
-    const p = document.createElement("p");
-    p.textContent = `ID: ${user.id}, Username: ${user.username}`;
-
     const btn = document.createElement("button");
-    btn.textContent = "Unfollow";
+    btn.textContent = "UNFOLLOW";
     btn.addEventListener("click", async () => {
       try {
         btn.disabled = true;
@@ -69,8 +66,14 @@ function insertElementInPage(users) {
       }
     });
 
-    row.appendChild(p);
+    const link = document.createElement("a");
+    link.href = `https://www.instagram.com/${user.username}`;
+    link.textContent = user.username;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+
     row.appendChild(btn);
+    row.appendChild(link);
     container.appendChild(row);
   });
 
