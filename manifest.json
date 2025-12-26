@@ -13,7 +13,7 @@
   "action": {
     "default_popup": "/src/popup/popup.html" ,
     "default_icon": {
-      "48": "/assets/images/get_started48.png"
+      "16": "/assets/images/logo16.png"
     }
   },
   "content_scripts": [
@@ -23,7 +23,7 @@
     }
   ],
   "icons": {
-    "48": "/assets/images/get_started48.png"
+    "128": "/assets/images/logo128.png"
   },
   "options_page": "/src/options/options.html",
     "web_accessible_resources": [
