@@ -1,2 +1,6 @@
-# whodabastard-extension
-Chrome extension to check who does not follow you back on instagram
+<h1 align="center">
+  WhodaBSTRD
+  <br> 
+  <img src="assets/images/logo256.png" align="center">
+</h1>
+
