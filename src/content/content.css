@@ -1,27 +1,71 @@
 #usersContainer {
-  background-color: #cf6909;
-  padding: 16px;
-  margin: 0;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1000px; /* altezza header */
+  overflow-y: auto;
+
+  background: #0f0f0f;
+  color: white;
+  padding: 16px 24px;
+  z-index: 99999;
+
+  border-bottom: 3px solid #333;
+  font-family: Consolas, Menlo, Monaco, "Courier New", monospace;
 }
+
 
 #usersContainer h1 {
-  grid-column: span 2;
-  margin: 0 0 16px 0;
-  font-size: 2rem;
-  font-weight: 700;
-  color: #333;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin-bottom: 14px;
+  font-size: 18px;
+  text-align: center;
 }
 
-#usersContainer p {
-  margin: 0;
-  color: #333;
-  background-color: rgba(255,255,255,0.5);
-  padding: 4px 8px;
-  border-radius: 4px;
+.usersGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 14px;
+}
+
+
+.userCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  border: 2px solid #333;
+  border-radius: 10px;
+  background: #181818;
+}
+
+.userCell button {
+  flex: 0 0 90px;
+  height: 48px;
+  border: none;
+  border-radius: 8px;
+  background: #04b80d;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.userCell button:disabled {
+  background: #555;
+  cursor: not-allowed;
+}
+
+.userCell a {
+  flex: 1;
+  font-size: 20px;
+  font-weight: bold;
+  color: #4da3ff;
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 50px
+}
+
+.userCell a:hover {
+  text-decoration: underline;
 }

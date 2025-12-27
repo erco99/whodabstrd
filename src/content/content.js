@@ -47,9 +47,12 @@ function insertElementInPage(users) {
   title.textContent = "List of BASTARDS:";
   container.appendChild(title);
 
+  const grid = document.createElement("div");
+  grid.className = "usersGrid";
+
   users.forEach(user => {
-    const row = document.createElement("div");
-    row.className = "userRow";
+    const cell = document.createElement("div");
+    cell.className = "userCell";
 
     const btn = document.createElement("button");
     btn.textContent = "UNFOLLOW";
@@ -72,14 +75,16 @@ function insertElementInPage(users) {
     link.target = "_blank";
     link.rel = "noopener noreferrer";
 
-    row.appendChild(btn);
-    row.appendChild(link);
-    container.appendChild(row);
+    cell.appendChild(btn);
+    cell.appendChild(link);
+    grid.appendChild(cell);
   });
 
+  container.appendChild(grid);
   const header = document.querySelector("header");
-  if (header) {
-    header.insertBefore(container, header.firstChild);
+
+  if (header && header.parentNode) {
+    header.parentNode.insertBefore(container, header);
   } else {
     document.body.insertBefore(container, document.body.firstChild);
   }
