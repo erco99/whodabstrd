@@ -36,23 +36,15 @@ button.addEventListener("click", async () => {
     button.disabled = true;
     loader.style.display = "block";
 
-    console.log("click")
-
     const userId = await getUserId();
-    if (!userId) throw new Error("ds_user_id non trovato");
+    if (!userId) throw new Error("ds_user_id not found");
 
     const [allFollowers, allFollowing] = await Promise.all([
       fetchAllUsers("followers", maxCount, userId),
       fetchAllUsers("following", maxCount, userId)
     ]);
-
-    console.log("Tutti i followers:", allFollowers);
-    console.log("Tutti i following:", allFollowing);
-
     const idsFollowers = new Set(allFollowers.map(u => u.id));
     const notFollowingBack = allFollowing.filter(u => !idsFollowers.has(u.id));
-
-    console.log("Non ti seguono:", notFollowingBack);
 
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       chrome.tabs.sendMessage(tabs[0].id, { action: "insertUsers", users: notFollowingBack });

@@ -1,3 +1,32 @@
+body {
+  min-width: 200px;
+  padding: 20px;
+  text-align: center;
+  font-family: sans-serif;
+}
+
+#scanBtn {
+  padding: 10px 16px;
+  font-size: 16px;
+  background-color: steelblue;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+button:disabled:hover {
+  background-color: inherit;
+  box-shadow: none;
+  transform: none;
+}
+
 .loader {
   margin: 12px auto;
   width: 28px;
