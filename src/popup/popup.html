@@ -2,9 +2,28 @@
 <html>
   <head>
     <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="../common/common.css">
   </head>
   <body>
+    <div class="header">
+      WhodaBSTRD
+    </div>
+
+    <div class="user-logged">
+      <div class="user-label">User logged:</div>
+      <a
+        id="loggedUsername"
+        class="user-link"
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        loading...
+      </a>
+    </div>
+
     <button id="scanBtn">SCAN</button>
+    
     <div id="loader" class="loader" style="display:none;"></div>
     <script src="popup.js"></script>
   </body>

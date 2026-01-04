@@ -1,18 +1,48 @@
 body {
   min-width: 200px;
-  padding: 20px;
+  padding: 0;
+  margin: 0;
   text-align: center;
   font-family: sans-serif;
 }
 
-#scanBtn {
-  padding: 10px 16px;
-  font-size: 16px;
-  background-color: steelblue;
-  color: white;
+.header {
+  background-color: pink;
+  color: black;
+  font-size: 24px;
+  font-weight: bold;
+  padding: 12px 8px;
+}
+
+.content {
+  padding: 20px;
+}
+
+.divider {
   border: none;
-  border-radius: 6px;
+  border-top: 1px solid #000000;
+  margin: 0;
+}
+
+#scanBtn {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 16px;
+  font-weight: 700;
+  color: white;
+  background: linear-gradient(90deg, #8B0000, #da6201);
+  border: none;
   cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 6px #8B0000;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+#scanBtn:hover {
+  color: #23d812;
+  box-shadow: 0 0 12px #8B0000, 0 0 20px #da6201;
+  transform: scale(1.08);
 }
 
 button:disabled {
@@ -41,4 +71,35 @@ button:disabled:hover {
   to {
     transform: rotate(360deg);
   }
+}
+
+.user-logged {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 10px;
+  background: linear-gradient(90deg, #fdfdfd, #f3f3f3);
+  border-bottom: 1px solid #ddd;
+}
+
+.user-label {
+  color: #555;
+  font-size: 15px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.user-link {
+  font-size: 16px;
+  font-weight: 700;
+  color: #222;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.user-link:hover {
+  color: #ff2d55;
+  text-shadow: 0 0 4px #ff2d55;
+  transform: scale(1.05);
 }
