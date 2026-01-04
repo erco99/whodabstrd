@@ -88,3 +88,36 @@ async function getUserId() {
     });
   });
 }
+
+async function getUsernameFromId(id) {
+  const response = await fetch(
+    `https://i.instagram.com/api/v1/users/${id}/info/`,
+    {
+      headers: headers
+    }
+  );
+
+  const data = await response.json();
+  return data.user.username;
+}
+
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const usernameEl = document.getElementById("loggedUsername");
+
+  try {
+    const userId = await getUserId();
+
+    if (!userId) {
+      throw new Error("No user id");
+    }
+
+    const username = await getUsernameFromId(userId);
+    usernameEl.textContent = username;
+    usernameEl.href = `https://www.instagram.com/${username}/`;
+  } catch (err) {
+    console.error(err);
+    usernameEl.textContent = "not logged";
+    usernameEl.removeAttribute("href");
+  }
+});
