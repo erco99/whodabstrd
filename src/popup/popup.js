@@ -30,8 +30,12 @@ chrome.storage.sync.get("buttonColor", ({ buttonColor }) => {
   }
 });
 
-
 button.addEventListener("click", async () => {
+  if (!(await checkIfOnProfilePage())) {
+    console.warn("Not on profile page");
+    return;
+  }
+  
   try {
     button.disabled = true;
     loader.style.display = "block";
@@ -115,9 +119,38 @@ document.addEventListener("DOMContentLoaded", async () => {
     const username = await getUsernameFromId(userId);
     usernameEl.textContent = username;
     usernameEl.href = `https://www.instagram.com/${username}/`;
+
+    button.disabled = !(await checkIfOnProfilePage());
   } catch (err) {
     console.error(err);
     usernameEl.textContent = "not logged";
     usernameEl.removeAttribute("href");
   }
 });
+
+async function checkIfOnProfilePage() {
+  const userId = await getUserId();
+  if (!userId) {
+    throw new Error("No user id");
+  }
+
+  const username = await getUsernameFromId(userId);
+
+  return new Promise((resolve) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const tab = tabs[0];
+      if (!tab?.url) {
+        resolve(false);
+        return;
+      }
+
+      const url = new URL(tab.url);
+
+      const isCorrectPage =
+        url.hostname === "www.instagram.com" &&
+        url.pathname === `/${username}/`;
+
+      resolve(isCorrectPage);
+    });
+  });
+}
