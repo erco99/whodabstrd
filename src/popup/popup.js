@@ -24,6 +24,9 @@ const headers = {
   'x-ig-app-id': '936619743392459',
 }
 
+let totalUsers = 0;
+let processedUsers = 0;
+
 chrome.storage.sync.get("buttonColor", ({ buttonColor }) => {
   if (buttonColor) {
     button.style.backgroundColor = buttonColor;
@@ -35,10 +38,15 @@ button.addEventListener("click", async () => {
     console.warn("Not on profile page");
     return;
   }
-  
+
   try {
     button.disabled = true;
     loader.style.display = "block";
+    progressText.style.display = "block";
+
+    totalUsers = await getFollowersAndFollowing();
+    processedUsers = 0;
+    updateProgress();
 
     const userId = await getUserId();
     if (!userId) throw new Error("ds_user_id not found");
@@ -51,12 +59,16 @@ button.addEventListener("click", async () => {
     const notFollowingBack = allFollowing.filter(u => !idsFollowers.has(u.id));
 
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, { action: "insertUsers", users: notFollowingBack });
+      chrome.tabs.sendMessage(tabs[0].id, { 
+        action: "insertUsers", 
+        users: notFollowingBack 
+      });
     });
 
   } catch (err) {
     console.error(err);
   } finally {
+    progressText.style.display = "none";
     loader.style.display = "none";
     button.disabled = false;
   }
@@ -77,6 +89,9 @@ async function fetchAllUsers(type, count, userId) {
     const data = await res.json();
 
     allUsers = allUsers.concat(data.users);
+
+    processedUsers += data.users.length;
+    updateProgress();
 
     next_max_id = data.next_max_id || null;
 
@@ -104,6 +119,27 @@ async function getUsernameFromId(id) {
   const data = await response.json();
   return data.user.username;
 }
+
+
+async function getFollowersAndFollowing() {
+  const userId = await getUserId();
+  const username = await getUsernameFromId(userId);
+
+  const response = await fetch(
+    `https://www.instagram.com/api/v1/users/web_profile_info/?username=${username}`,
+    {
+      headers: headers,
+    }
+  );
+
+  const data = await response.json();
+
+  const followers = data?.data?.user?.edge_followed_by?.count ?? 0;
+  const following = data?.data?.user?.edge_follow?.count ?? 0;
+
+  return followers + following;
+}
+
 
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -153,4 +189,8 @@ async function checkIfOnProfilePage() {
       resolve(isCorrectPage);
     });
   });
+}
+
+function updateProgress() {
+  progressText.textContent = `${processedUsers} / ${totalUsers}`;
 }
