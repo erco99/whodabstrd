@@ -22,3 +22,12 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return true;
   }
 });
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.url) {
+    chrome.runtime.sendMessage({
+      type: "url_changed"
+    });
+  }
+});
+

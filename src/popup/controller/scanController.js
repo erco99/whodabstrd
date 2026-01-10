@@ -5,10 +5,15 @@ import { ScanUI } from "../ui/scanUI.js";
 
 export const ScanController = {
   async init() {
-    const enabled = await this.canEnable();
-    ScanUI.setEnabled(enabled);
+    await this.updateButtonState();
 
     ScanUI.button().addEventListener("click", () => this.scan());
+
+    chrome.runtime.onMessage.addListener((message) => {
+      if (message.type === "url_changed") {
+        this.updateButtonState();
+      }
+    });
   },
 
   async scan() {
@@ -69,5 +74,10 @@ export const ScanController = {
     } catch {
       return false;
     }
-  }
+  },
+
+  async updateButtonState() {
+    const enabled = await this.canEnable();
+    ScanUI.setEnabled(enabled);
+  },
 };
