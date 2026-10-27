@@ -4,14 +4,19 @@ import { ScanProgressService } from "./scanProgressService.js";
 const MAX_COUNT = 25;
 
 export const InstagramService = {
-  async getUsernameFromId(id) {
-    const res = await fetch(
-      `https://i.instagram.com/api/v1/users/${id}/info/`,
-      { headers: INSTAGRAM_HEADERS }
-    );
-    const data = await res.json();
-    return data.user.username;
-  },
+    async getUsernameFromId(id) {
+      const url = `https://www.instagram.com/uid/${id}`;
+
+      const response = await fetch(url, {
+        credentials: "include",
+        redirect: "follow"
+      });
+
+      const html = await response.text();
+      const match = html.match(/"username"\s*:\s*"([^"]+)"/);
+
+      return match?.[1] ?? null;
+    },
 
   async getFollowersAndFollowingCount(username) {
     const res = await fetch(
@@ -37,7 +42,7 @@ export const InstagramService = {
       const url = nextMaxId ? `${base}&max_id=${nextMaxId}` : base;
       const res = await fetch(url, { headers: INSTAGRAM_HEADERS });
       const data = await res.json();
-
+      
       users.push(...data.users);
       ScanProgressService.increment(data.users.length);
 
