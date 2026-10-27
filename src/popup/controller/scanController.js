@@ -23,13 +23,8 @@ export const ScanController = {
       const userId = await ChromeService.getUserId();
       if (!userId) throw new Error("No user id");
 
-      const username = await InstagramService.getUsernameFromId(userId);
-
-      const total =
-        await InstagramService.getFollowersAndFollowingCount(username);
-
-      ScanProgressService.reset(total, (processed, total) => {
-        ScanUI.updateProgress(`${processed} / ${total}`);
+      ScanProgressService.reset((processed) => {
+        ScanUI.updateProgress(`${processed} utenti elaborati`);
       });
 
       const [followers, following] = await Promise.all([
